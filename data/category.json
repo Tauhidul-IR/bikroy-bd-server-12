@@ -1,0 +1,17 @@
+[
+    {
+        "_id": 1,
+        "category": "Samsung Phone",
+        "allProducts": []
+    },
+    {
+        "_id": 2,
+        "category": "Oppo Phone",
+        "allProducts": []
+    },
+    {
+        "_id": 3,
+        "category": "realme Phone",
+        "allProducts": []
+    }
+]
