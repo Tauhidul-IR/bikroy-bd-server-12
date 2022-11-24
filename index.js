@@ -43,7 +43,19 @@ async function run() {
         })
 
 
+        app.get('/allCategoryProducts', async (req, res) => {
+            console.log(req.query)
+            let query = {}
+            if (req.query.categoryName) {
+                query = {
+                    categoryName: req.query.categoryName
+                }
+            }
 
+            const cursor = allproductCollection.find(query);
+            const product = await cursor.toArray();
+            res.send(product);
+        })
 
 
     }
