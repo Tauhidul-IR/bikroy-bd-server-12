@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 5000;
 require('dotenv').config();
 // const stripe = require("stripe")(process.env.STRIPE_SECRET);
@@ -19,13 +19,33 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@clu
 // console.log(uri)
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+
+
+//JWT middleWare
+function verifyJWT(req, res, next) {
+    // console.log()
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        return res.status(401).send('unauthorized access.')
+    }
+    const token = authHeader.split(' ')[1];
+    jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
+        if (err) {
+            return res.status(403).send({ message: 'forbidden access' })
+        }
+        req.decoded = decoded;
+        next();
+    })
+}
+
+
+
 async function run() {
     try {
         const categoryCollection = client.db('bikroyBD').collection('category');
         const allproductCollection = client.db('bikroyBD').collection('allproducts');
         const phoneBookingCollections = client.db('bikroyBD').collection('bookingPhones');
         const userCollections = client.db('bikroyBD').collection('users');
-        // const paymentsCollection = client.db('doctorsPortal').collection('payments');
 
 
         //For Home page category 
@@ -65,8 +85,13 @@ async function run() {
             const result = await phoneBookingCollections.insertOne(phoneBookings)
             res.send(result)
         })
-        app.get('/phoneBookings', async (req, res) => {
+        app.get('/phoneBookings', verifyJWT, async (req, res) => {
             const email = req.query.email
+            // console.log(req.headers.authorization);
+            const decodedEmail = req.decoded.email
+            if (email !== decodedEmail) {
+                return res.status(403).send({ message: 'forbidden' })
+            }
             const query = { email: email }
             const phoneBooking = await phoneBookingCollections.find(query).toArray();
             res.send(phoneBooking);
@@ -78,6 +103,18 @@ async function run() {
             const result = await userCollections.insertOne(user)
             res.send(result);
 
+        })
+
+        app.get('/jwt', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const user = await userCollections.findOne(query)
+            if (user) {
+                const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, { expiresIn: '10h' })
+                return res.send({ accessToken: token })
+            }
+            console.log(user)
+            res.status(403).send({ accessToken: '' })
         })
 
 
