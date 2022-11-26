@@ -23,7 +23,7 @@ async function run() {
     try {
         const categoryCollection = client.db('bikroyBD').collection('category');
         const allproductCollection = client.db('bikroyBD').collection('allproducts');
-        // const usersCollections = client.db('doctorPortal').collection('users');
+        const phoneBookingCollections = client.db('bikroyBD').collection('bookingPhones');
         // const doctorsCollections = client.db('doctorPortal').collection('doctors');
         // const paymentsCollection = client.db('doctorsPortal').collection('payments');
 
@@ -55,6 +55,13 @@ async function run() {
             const cursor = allproductCollection.find(query);
             const product = await cursor.toArray();
             res.send(product);
+        })
+
+        app.post('/phoneBookings', async (req, res) => {
+            phoneBookings = req.body
+            console.log(phoneBookings);
+            const result = await phoneBookingCollections.insertOne(phoneBookings)
+            res.send(result)
         })
 
 
