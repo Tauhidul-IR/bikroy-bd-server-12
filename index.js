@@ -24,11 +24,11 @@ async function run() {
         const categoryCollection = client.db('bikroyBD').collection('category');
         const allproductCollection = client.db('bikroyBD').collection('allproducts');
         const phoneBookingCollections = client.db('bikroyBD').collection('bookingPhones');
-        // const doctorsCollections = client.db('doctorPortal').collection('doctors');
+        const userCollections = client.db('bikroyBD').collection('users');
         // const paymentsCollection = client.db('doctorsPortal').collection('payments');
 
 
-
+        //For Home page category 
         app.get('/category', async (req, res) => {
             const query = {};
             const category = await categoryCollection.find(query).toArray();
@@ -42,7 +42,7 @@ async function run() {
             res.send(service)
         })
 
-
+        //For Query use category name
         app.get('/allCategoryProducts', async (req, res) => {
             console.log(req.query)
             let query = {}
@@ -58,7 +58,7 @@ async function run() {
         })
 
 
-
+        //Booking part get and post
         app.post('/phoneBookings', async (req, res) => {
             phoneBookings = req.body
             console.log(phoneBookings);
@@ -70,6 +70,14 @@ async function run() {
             const query = { email: email }
             const phoneBooking = await phoneBookingCollections.find(query).toArray();
             res.send(phoneBooking);
+        })
+
+        //User information 
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await userCollections.insertOne(user)
+            res.send(result);
+
         })
 
 
