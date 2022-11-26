@@ -57,11 +57,19 @@ async function run() {
             res.send(product);
         })
 
+
+
         app.post('/phoneBookings', async (req, res) => {
             phoneBookings = req.body
             console.log(phoneBookings);
             const result = await phoneBookingCollections.insertOne(phoneBookings)
             res.send(result)
+        })
+        app.get('/phoneBookings', async (req, res) => {
+            const email = req.query.email
+            const query = { email: email }
+            const phoneBooking = await phoneBookingCollections.find(query).toArray();
+            res.send(phoneBooking);
         })
 
 
