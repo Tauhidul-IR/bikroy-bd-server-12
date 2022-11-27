@@ -52,7 +52,7 @@ async function run() {
             console.log(req.decoded.email);
             const decodedEmail = req.decoded.email;
             const query = { email: decodedEmail }
-            const user = await usersCollections.findOne(query)
+            const user = await userCollections.findOne(query)
             if (user?.role !== 'admin') {
                 return res.status(403).send({ message: 'forbidden access' })
             }
@@ -166,7 +166,7 @@ async function run() {
         app.get('/users/admin/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email };
-            const user = await usersCollections.findOne(query)
+            const user = await userCollections.findOne(query)
             res.send({ isAdmin: user?.role === 'admin' })
         })
 
