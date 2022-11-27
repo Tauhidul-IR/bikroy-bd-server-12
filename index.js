@@ -199,6 +199,20 @@ async function run() {
             const result = await addProductCollections.insertOne(product);
             res.send(result);
         })
+        //Show a product
+        app.get('/showAddProduct', async (req, res) => {
+            // console.log(req.query)
+            let query = {}
+            if (req.query.email) {
+                query = {
+                    email: req.query.email
+                }
+            }
+
+            const cursor = addProductCollections.find(query);
+            const product = await cursor.toArray();
+            res.send(product);
+        })
 
 
     }
