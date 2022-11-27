@@ -46,6 +46,7 @@ async function run() {
         const allproductCollection = client.db('bikroyBD').collection('allproducts');
         const phoneBookingCollections = client.db('bikroyBD').collection('bookingPhones');
         const userCollections = client.db('bikroyBD').collection('users');
+        const addProductCollections = client.db('bikroyBD').collection('addProduct');
 
 
         const verifyAdmin = async (req, res, next) => {
@@ -58,6 +59,16 @@ async function run() {
             }
             next();
         }
+        // const verifySeller = async (req, res, next) => {
+        //     // console.log(req.decoded.email);
+        //     const decodedEmail = req.decoded.email;
+        //     const query = { email: decodedEmail }
+        //     const user = await userCollections.findOne(query)
+        //     if (user?.userType !== 'Seller') {
+        //         return res.status(403).send({ message: 'forbidden access' })
+        //     }
+        //     next();
+        // }
 
 
         //For Home page category 
@@ -179,6 +190,14 @@ async function run() {
             const query = { email };
             const user = await userCollections.findOne(query)
             res.send({ isSeller: user?.userType === 'Seller' })
+        })
+
+
+        //add a product
+        app.post('/addProduct', async (req, res) => {
+            const product = req.body;
+            const result = await addProductCollections.insertOne(product);
+            res.send(result);
         })
 
 
