@@ -201,7 +201,6 @@ async function run() {
         })
         //Show a product
         app.get('/showAddProduct', async (req, res) => {
-            // console.log(req.query)
             let query = {}
             if (req.query.email) {
                 query = {
@@ -215,6 +214,20 @@ async function run() {
         })
 
 
+        //Show all seller
+        app.get('/sellers', async (req, res) => {
+            console.log(req.query.userType);
+            let query = {}
+            if (req.query.userType) {
+                query = {
+                    userType: req.query.userType
+                }
+            }
+
+            const cursor = userCollections.find(query);
+            const product = await cursor.toArray();
+            res.send(product);
+        })
     }
 
 
