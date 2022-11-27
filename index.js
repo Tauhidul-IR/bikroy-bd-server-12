@@ -167,7 +167,7 @@ async function run() {
             const option = { upsert: true };
             const updatedDoc = {
                 $set: {
-                    role: 'admin'
+                    userType: 'Seller'
                 }
             }
             const result = await userCollections.updateOne(filter, updatedDoc, option);
