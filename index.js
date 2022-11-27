@@ -196,7 +196,7 @@ async function run() {
         //add a product
         app.post('/addProduct', async (req, res) => {
             const product = req.body;
-            const result = await addProductCollections.insertOne(product);
+            const result = await allproductCollection.insertOne(product);
             res.send(result);
         })
         //Show a product
@@ -208,7 +208,7 @@ async function run() {
                 }
             }
 
-            const cursor = addProductCollections.find(query);
+            const cursor = allproductCollection.find(query);
             const product = await cursor.toArray();
             res.send(product);
         })
@@ -236,6 +236,16 @@ async function run() {
             const cursor = userCollections.find(query);
             const product = await cursor.toArray();
             res.send(product);
+        })
+
+
+
+        //delete user
+        app.delete('/users/:id', verifyJWT, verifyAdmin, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await userCollections.deleteOne(filter);
+            res.send(result);
         })
 
     }
