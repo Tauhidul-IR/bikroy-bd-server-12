@@ -49,7 +49,7 @@ async function run() {
 
 
         const verifyAdmin = async (req, res, next) => {
-            console.log(req.decoded.email);
+            // console.log(req.decoded.email);
             const decodedEmail = req.decoded.email;
             const query = { email: decodedEmail }
             const user = await userCollections.findOne(query)
@@ -76,7 +76,7 @@ async function run() {
 
         //For Query use category name
         app.get('/allCategoryProducts', async (req, res) => {
-            console.log(req.query)
+            // console.log(req.query)
             let query = {}
             if (req.query.categoryName) {
                 query = {
@@ -93,7 +93,7 @@ async function run() {
         //Booking part get and post
         app.post('/phoneBookings', async (req, res) => {
             phoneBookings = req.body
-            console.log(phoneBookings);
+            // console.log(phoneBookings);
             const result = await phoneBookingCollections.insertOne(phoneBookings)
             res.send(result)
         })
@@ -119,6 +119,8 @@ async function run() {
         //     const phoneBooking = await phoneBookingCollections.find(query).toArray();
         //     res.send(phoneBooking);
         // })
+
+
 
         //User information 
         app.post('/users', async (req, res) => {
@@ -168,6 +170,15 @@ async function run() {
             const query = { email };
             const user = await userCollections.findOne(query)
             res.send({ isAdmin: user?.role === 'admin' })
+        })
+
+
+        //Seller 
+        app.get('/users/seller/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email };
+            const user = await userCollections.findOne(query)
+            res.send({ isSeller: user?.userType === 'Seller' })
         })
 
 
