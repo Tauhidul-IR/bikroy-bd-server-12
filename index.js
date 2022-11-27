@@ -48,6 +48,18 @@ async function run() {
         const userCollections = client.db('bikroyBD').collection('users');
 
 
+        const verifyAdmin = async (req, res, next) => {
+            console.log(req.decoded.email);
+            const decodedEmail = req.decoded.email;
+            const query = { email: decodedEmail }
+            const user = await usersCollections.findOne(query)
+            if (user?.role !== 'admin') {
+                return res.status(403).send({ message: 'forbidden access' })
+            }
+            next();
+        }
+
+
         //For Home page category 
         app.get('/category', async (req, res) => {
             const query = {};
@@ -85,17 +97,28 @@ async function run() {
             const result = await phoneBookingCollections.insertOne(phoneBookings)
             res.send(result)
         })
-        app.get('/phoneBookings', verifyJWT, async (req, res) => {
+        app.get('/phoneBookings', async (req, res) => {
             const email = req.query.email
             // console.log(req.headers.authorization);
-            const decodedEmail = req.decoded.email
-            if (email !== decodedEmail) {
-                return res.status(403).send({ message: 'forbidden' })
-            }
+            // const decodedEmail = req.decoded.email
+            // if (email !== decodedEmail) {
+            //     return res.status(403).send({ message: 'forbidden' })
+            // }
             const query = { email: email }
             const phoneBooking = await phoneBookingCollections.find(query).toArray();
             res.send(phoneBooking);
         })
+        // app.get('/phoneBookings', verifyJWT, async (req, res) => {
+        //     const email = req.query.email
+        //     // console.log(req.headers.authorization);
+        //     const decodedEmail = req.decoded.email
+        //     if (email !== decodedEmail) {
+        //         return res.status(403).send({ message: 'forbidden' })
+        //     }
+        //     const query = { email: email }
+        //     const phoneBooking = await phoneBookingCollections.find(query).toArray();
+        //     res.send(phoneBooking);
+        // })
 
         //User information 
         app.post('/users', async (req, res) => {
@@ -121,6 +144,30 @@ async function run() {
             }
             console.log(user)
             res.status(403).send({ accessToken: '' })
+        })
+
+        //admin user
+        app.put('/users/admin/:id', verifyJWT, verifyAdmin, async (req, res) => {
+
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) }
+            const option = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    role: 'admin'
+                }
+            }
+            const result = await userCollections.updateOne(filter, updatedDoc, option);
+            res.send(result);
+        })
+
+
+        //admin user check
+        app.get('/users/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email };
+            const user = await usersCollections.findOne(query)
+            res.send({ isAdmin: user?.role === 'admin' })
         })
 
 
