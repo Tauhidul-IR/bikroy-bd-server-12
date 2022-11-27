@@ -228,6 +228,16 @@ async function run() {
             const product = await cursor.toArray();
             res.send(product);
         })
+
+
+        //Show all Buyer
+        app.get('/buyers', async (req, res) => {
+            let query = {}
+            const cursor = userCollections.find(query);
+            const product = await cursor.toArray();
+            res.send(product);
+        })
+
     }
 
 
