@@ -214,6 +214,17 @@ async function run() {
             res.send(product);
         })
 
+        //delete product
+        app.delete('/showAddProduct/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await allproductCollection.deleteOne(filter);
+            res.send(result);
+        })
+
+
+
+
 
         //Show all seller
         app.get('/sellers', async (req, res) => {
@@ -290,6 +301,14 @@ async function run() {
             }
             const updatedResult = await phoneBookingCollections.updateOne(filter, updatedDoc)
             res.send(result);
+        })
+
+        app.get('/phoneBookings', async (req, res) => {
+            const name = req.query.name
+            // }
+            const query = { name: name }
+            const phoneBooking = await phoneBookingCollections.find(query).toArray();
+            res.send(phoneBooking);
         })
 
     }
