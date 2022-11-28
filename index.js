@@ -325,6 +325,13 @@ async function run() {
             res.send(service)
         })
 
+        app.get('/report', async (req, res) => {
+            const query = {};
+            const reportedItem = await reportsCollections.find(query).toArray();
+            res.send(reportedItem)
+        })
+
+
 
         //Report part end
 
