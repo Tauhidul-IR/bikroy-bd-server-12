@@ -331,6 +331,22 @@ async function run() {
             res.send(reportedItem)
         })
 
+        //delete reported product
+        app.delete('/deleteReportItem/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await allproductCollection.deleteOne(filter);
+            res.send(result);
+        })
+
+        //delete reported product
+        app.delete('/deleteReport/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await reportsCollections.deleteOne(filter);
+            res.send(result);
+        })
+
 
 
         //Report part end
