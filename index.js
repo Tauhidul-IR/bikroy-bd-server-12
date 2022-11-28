@@ -349,7 +349,7 @@ async function run() {
         //Report part end
 
 
-
+        //Advertising part
         app.put('/advertise/:id', async (req, res) => {
 
             const id = req.params.id;
@@ -363,6 +363,20 @@ async function run() {
             const result = await allproductCollection.updateOne(filter, updatedDoc, option);
             res.send(result);
         })
+
+        app.get('/advertisedProduct', async (req, res) => {
+            let query = {}
+            if (req.query.productStatus) {
+                query = {
+                    productStatus: req.query.productStatus
+                }
+            }
+
+            const cursor = allproductCollection.find(query);
+            const product = await cursor.toArray();
+            res.send(product);
+        })
+
 
     }
 
