@@ -51,7 +51,7 @@ async function run() {
 
 
         const verifyAdmin = async (req, res, next) => {
-            // console.log(req.decoded.email);
+
             const decodedEmail = req.decoded.email;
             const query = { email: decodedEmail }
             const user = await userCollections.findOne(query)
@@ -60,16 +60,7 @@ async function run() {
             }
             next();
         }
-        // const verifySeller = async (req, res, next) => {
-        //     // console.log(req.decoded.email);
-        //     const decodedEmail = req.decoded.email;
-        //     const query = { email: decodedEmail }
-        //     const user = await userCollections.findOne(query)
-        //     if (user?.userType !== 'Seller') {
-        //         return res.status(403).send({ message: 'forbidden access' })
-        //     }
-        //     next();
-        // }
+
 
 
         //For Home page category 
@@ -88,7 +79,6 @@ async function run() {
 
         //For Query use category name
         app.get('/allCategoryProducts', async (req, res) => {
-            // console.log(req.query)
             let query = {}
             if (req.query.categoryName) {
                 query = {
@@ -102,39 +92,23 @@ async function run() {
         })
 
 
-        //Booking part get and post
+        //Booking part get and post-------
         app.post('/phoneBookings', async (req, res) => {
             phoneBookings = req.body
-            // console.log(phoneBookings);
             const result = await phoneBookingCollections.insertOne(phoneBookings)
             res.send(result)
         })
         app.get('/phoneBookings', async (req, res) => {
             const email = req.query.email
-            // console.log(req.headers.authorization);
-            // const decodedEmail = req.decoded.email
-            // if (email !== decodedEmail) {
-            //     return res.status(403).send({ message: 'forbidden' })
-            // }
             const query = { email: email }
             const phoneBooking = await phoneBookingCollections.find(query).toArray();
             res.send(phoneBooking);
         })
-        // app.get('/phoneBookings', verifyJWT, async (req, res) => {
-        //     const email = req.query.email
-        //     // console.log(req.headers.authorization);
-        //     const decodedEmail = req.decoded.email
-        //     if (email !== decodedEmail) {
-        //         return res.status(403).send({ message: 'forbidden' })
-        //     }
-        //     const query = { email: email }
-        //     const phoneBooking = await phoneBookingCollections.find(query).toArray();
-        //     res.send(phoneBooking);
-        // })
 
 
 
-        //User information 
+
+        //User information -----------
         app.post('/users', async (req, res) => {
             const user = req.body;
             const result = await userCollections.insertOne(user)
@@ -160,7 +134,7 @@ async function run() {
             res.status(403).send({ accessToken: '' })
         })
 
-        //admin user
+        //admin user-------------
         app.put('/users/admin/:id', verifyJWT, verifyAdmin, async (req, res) => {
 
             const id = req.params.id;
@@ -176,7 +150,7 @@ async function run() {
         })
 
 
-        //admin user check
+        //admin user check---------------
         app.get('/users/admin/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email };
@@ -185,7 +159,7 @@ async function run() {
         })
 
 
-        //Seller 
+        //Seller ----------------
         app.get('/users/seller/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email };
@@ -194,13 +168,13 @@ async function run() {
         })
 
 
-        //add a product
+        //add a product----------------
         app.post('/addProduct', async (req, res) => {
             const product = req.body;
             const result = await allproductCollection.insertOne(product);
             res.send(result);
         })
-        //Show a product
+        //Show a product---------------
         app.get('/showAddProduct', async (req, res) => {
             let query = {}
             if (req.query.email) {
@@ -214,7 +188,7 @@ async function run() {
             res.send(product);
         })
 
-        //delete product
+        //delete product---------------------
         app.delete('/showAddProduct/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
@@ -226,7 +200,7 @@ async function run() {
 
 
 
-        //Show all seller
+        //Show all seller----------------
         app.get('/sellers', async (req, res) => {
             console.log(req.query.userType);
             let query = {}
@@ -242,7 +216,7 @@ async function run() {
         })
 
 
-        //Show all Buyer
+        //Show all Buyer------------------
         app.get('/buyers', async (req, res) => {
             let query = {}
             const cursor = userCollections.find(query);
@@ -252,7 +226,7 @@ async function run() {
 
 
 
-        //delete user
+        //delete user---------------
         app.delete('/users/:id', verifyJWT, verifyAdmin, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
@@ -261,7 +235,7 @@ async function run() {
         })
 
 
-        //payment part
+        //payment part----------------
         app.get('/phoneBookings/:id', async (req, res) => {
             const id = req.params.id
             const query = { _id: ObjectId(id) }
@@ -287,7 +261,7 @@ async function run() {
             });
         })
 
-        //payment data store api
+        //payment data store api------
         app.post('/payments', async (req, res) => {
             const payment = req.body;
             const result = await paymentCollections.insertOne(payment);
@@ -311,7 +285,7 @@ async function run() {
             res.send(phoneBooking);
         })
 
-        //Report part
+        //Report part---------------------------
         app.post('/reportAdmin', async (req, res) => {
             const product = req.body;
             const result = await reportsCollections.insertOne(product);
@@ -349,7 +323,8 @@ async function run() {
         //Report part end
 
 
-        //Advertising part
+
+        //Advertising part-----------------------
         app.put('/advertise/:id', async (req, res) => {
 
             const id = req.params.id;
@@ -376,6 +351,7 @@ async function run() {
             const product = await cursor.toArray();
             res.send(product);
         })
+        //Advertising part end
 
 
     }
