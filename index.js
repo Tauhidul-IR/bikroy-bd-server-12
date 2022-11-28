@@ -47,7 +47,7 @@ async function run() {
         const phoneBookingCollections = client.db('bikroyBD').collection('bookingPhones');
         const userCollections = client.db('bikroyBD').collection('users');
         const paymentCollections = client.db('bikroyBD').collection('payments');
-        const addProductCollections = client.db('bikroyBD').collection('addProduct');
+        const reportsCollections = client.db('bikroyBD').collection('reports');
 
 
         const verifyAdmin = async (req, res, next) => {
@@ -310,6 +310,23 @@ async function run() {
             const phoneBooking = await phoneBookingCollections.find(query).toArray();
             res.send(phoneBooking);
         })
+
+        //Report part
+        app.post('/reportAdmin', async (req, res) => {
+            const product = req.body;
+            const result = await reportsCollections.insertOne(product);
+            res.send(result);
+        })
+
+        app.get('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const service = await allproductCollection.findOne(query);
+            res.send(service)
+        })
+
+
+        //Report part end
 
     }
 
