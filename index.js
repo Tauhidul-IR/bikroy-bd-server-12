@@ -346,10 +346,23 @@ async function run() {
             const result = await reportsCollections.deleteOne(filter);
             res.send(result);
         })
-
-
-
         //Report part end
+
+
+
+        app.put('/advertise/:id', async (req, res) => {
+
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) }
+            const option = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    productStatus: 'advertised'
+                }
+            }
+            const result = await allproductCollection.updateOne(filter, updatedDoc, option);
+            res.send(result);
+        })
 
     }
 
